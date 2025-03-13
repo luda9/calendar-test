@@ -25,7 +25,7 @@ function App() {
 
   const handleClick = () => {
     window.open(
-      'https://wa.me/523312229746?text=Hola👋, Quisiera reservar la siguiente fecha🗓️:',
+      `https://wa.me/523312229746?text=Hola👋, Quisiera reservar la siguiente fecha🗓️: ${selectedDate}`,
       '_blank' // Esto abre el enlace en una nueva pestaña o ventana
     );
   };
@@ -39,7 +39,7 @@ function App() {
               id="modal-title"
               level="h1"
               textColor="inherit"
-              sx={{ fontWeight: 'lg', mb: 10, textAlign: 'center' }}
+              sx={{ fontWeight: 'lg', mb: 3, textAlign: 'center' }}
             >Eventos</Typography>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateCalendar
