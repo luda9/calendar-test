@@ -54,13 +54,35 @@ function App() {
                 backgroundColor: '#f0f0f0',
                 pointerEvents: 'none',
               },
+              '& .MuiPickersDay-root:hover': {
+                backgroundColor: '#ffddcf',
+              },
+              '& .MuiPickersDay-root:focus': {
+                backgroundColor: '#ffddcf',
+                outline: '4px auto #fd6a30'
+              },
+              '& .Mui-selected': {
+                backgroundColor: '#fd6a30 !important',
+              },
+              '& .Mui-selected:focus': {
+                outline: '4px auto #fd6a30'
+              },
             }}
             onChange={(date) => setSelectedDate(date.locale('es').format('dddd DD [de] MMMM [del] YYYY'))}
           />
           {selectedDate && (
             <Button
-              style={{width: 100, margin: '0 auto'}}
-              color="neutral"
+              sx={{
+                width: 100,
+                margin: "0 auto",
+                backgroundColor: "#ffddcf",
+                "&:hover": {
+                  backgroundColor: "#ffddcf",
+                },
+                "&:focus": {
+                  outline: "4px auto #fd6a30",
+                },
+              }}
               onClick={() => setOpenModal(true)}
               variant="soft"
             >Continue</Button>
@@ -82,9 +104,24 @@ function App() {
                 Quiero apartar la siguiente fecha: <code>{selectedDate}</code>.
               </Typography>
               <Button
-                color="danger"
                 onClick={handleClick}
                 variant="soft"
+                sx={{
+                  backgroundColor: "#fd6a30",
+                  color: '#fff',
+                  "&:hover": {
+                    backgroundColor: "#fd6a30",
+                  },
+                  "&:focus": {
+                    outline: "4px auto #ffddcf",
+                  },
+                  "&:focus-visible": {
+                    outline: "4px auto #ffddcf",
+                  },
+                  "&:active": {
+                    backgroundColor: "#ffddcf",
+                  },
+                }}
             >Continue</Button>
             </ModalDialog>
           </Modal>
