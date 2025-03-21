@@ -1,27 +1,25 @@
 import { useState } from 'react'
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
-import dayjs from 'dayjs';
 import 'dayjs/locale/es';
-import { Button, Modal, ModalDialog, ModalClose, Typography, Container } from '@mui/joy';
 import Navbar from './components/Navbar';
+import EventsCalendar from './components/EventsCalendar';
+import Confirmation from './components/Confirmation';
+
+import { Button, Typography } from '@mui/joy';
+import CalendarStepper from './components/CalendarStepper';
+import TimePicker from './components/TimePicker';
 
 function App() {
   const [ selectedDate, setSelectedDate ] = useState('')
-  const [ openModal, setOpenModal ] = useState(false)
+  const [activeStep, setActiveStep] = useState(0);
+  const [horario, setHorario] = useState('');
 
-  const disabledDates = [
-    dayjs('2025-03-22'),
-    dayjs('2025-03-15'),
-    dayjs('2025-04-01'),
-    dayjs('2025-03-25'),
-  ];
+  const handleHorario = (value) => {
+    setHorario(value)
+  }
 
-  // Función para verificar si una fecha está en la lista de deshabilitadas
-  const disableSpecificDates = (date) => {
-    return disabledDates.some((disabledDate) => disabledDate.isSame(date, 'day'));
-  };
+  const handleDaySelection = (value) => {
+    setSelectedDate(value)
+  }
 
   const handleClick = () => {
     window.open(
@@ -29,6 +27,34 @@ function App() {
       '_blank' // Esto abre el enlace en una nueva pestaña o ventana
     );
   };
+
+  const handleStep = (value) => {
+    if (value) {
+      setActiveStep(activeStep + 1)
+    } else {
+      setActiveStep(activeStep - 1)
+      setSelectedDate('')
+    }
+
+  }
+
+  let view;
+
+  switch (activeStep) {
+    case 0:
+        view = <EventsCalendar handleDaySelection={handleDaySelection} />
+      break;
+    case 1:
+      view = <TimePicker handleStep={handleStep} handleHorario={handleHorario} />
+      break;
+    case 2:
+      view = <Confirmation handleClick={handleClick} selectedDate={selectedDate} horario={horario}/>
+      break;
+
+    default:
+      break;
+  }
+
 
   return (
     <div
@@ -39,93 +65,31 @@ function App() {
         style={{width: '100%', display: 'flex', flexDirection: 'column', height: '100%' }}
       >
         <Typography
-                component="h1"
-                id="modal-title"
-                level="h1"
-                textColor="inherit"
-                sx={{ fontWeight: 'lg', mb: 3, textAlign: 'center' }}
-              >Eventos</Typography>
-        <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DateCalendar
-            disablePast
-            shouldDisableDate={disableSpecificDates}
+          component="h1"
+          id="modal-title"
+          level="h1"
+          textColor="inherit"
+          sx={{ fontWeight: 'lg', mb: 3, textAlign: 'center' }}
+        >Eventos</Typography>
+        <CalendarStepper activeStep={activeStep} />
+        {view}
+        {selectedDate && activeStep !== 2 ? (
+          <Button
             sx={{
-              '& .Mui-disabled': {
-                backgroundColor: '#f0f0f0',
-                pointerEvents: 'none',
+              width: 100,
+              margin: "0 auto",
+              backgroundColor: activeStep == 0 ? "#ffddcf" : '#dfdfdf',
+              "&:hover": {
+                backgroundColor: activeStep == 0 ? "#ffddcf" : '#dfdfdf',
               },
-              '& .MuiPickersDay-root:hover': {
-                backgroundColor: '#ffddcf',
-              },
-              '& .MuiPickersDay-root:focus': {
-                backgroundColor: '#ffddcf',
-                outline: '4px auto #fd6a30'
-              },
-              '& .Mui-selected': {
-                backgroundColor: '#fd6a30 !important',
-              },
-              '& .Mui-selected:focus': {
-                outline: '4px auto #fd6a30'
+              "&:focus": {
+                outline: "4px auto #fd6a30",
               },
             }}
-            onChange={(date) => setSelectedDate(date.locale('es').format('dddd DD [de] MMMM [del] YYYY'))}
-          />
-          {selectedDate && (
-            <Button
-              sx={{
-                width: 100,
-                margin: "0 auto",
-                backgroundColor: "#ffddcf",
-                "&:hover": {
-                  backgroundColor: "#ffddcf",
-                },
-                "&:focus": {
-                  outline: "4px auto #fd6a30",
-                },
-              }}
-              onClick={() => setOpenModal(true)}
-              variant="soft"
-            >Continue</Button>
-          )}
-          <Modal
-            open={openModal}
-            onClose={() => setOpenModal(false)}
-          >
-            <ModalDialog>
-              <ModalClose />
-              <Typography
-                component="h2"
-                id="modal-title"
-                level="h4"
-                textColor="inherit"
-                sx={{ fontWeight: 'lg', mb: 1 }}
-              >Confirmación</Typography>
-              <Typography id="modal-desc" textColor="text.tertiary">
-                Quiero apartar la siguiente fecha: <code>{selectedDate}</code>.
-              </Typography>
-              <Button
-                onClick={handleClick}
-                variant="soft"
-                sx={{
-                  backgroundColor: "#fd6a30",
-                  color: '#fff',
-                  "&:hover": {
-                    backgroundColor: "#fd6a30",
-                  },
-                  "&:focus": {
-                    outline: "4px auto #ffddcf",
-                  },
-                  "&:focus-visible": {
-                    outline: "4px auto #ffddcf",
-                  },
-                  "&:active": {
-                    backgroundColor: "#ffddcf",
-                  },
-                }}
-            >Continue</Button>
-            </ModalDialog>
-          </Modal>
-        </LocalizationProvider>
+            onClick={() => activeStep == 0 ? handleStep(1) : handleStep(0)}
+            variant="soft"
+          >{activeStep == 0 ? 'Continue' : 'Atrás'}</Button>
+        ) : ''}
       </div>
     </div>
   );
