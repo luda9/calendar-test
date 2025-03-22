@@ -3,6 +3,8 @@ import 'dayjs/locale/es';
 import Navbar from './components/Navbar';
 import EventsCalendar from './components/EventsCalendar';
 import Confirmation from './components/Confirmation';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 
 import { Button, Typography } from '@mui/joy';
 import CalendarStepper from './components/CalendarStepper';
@@ -55,6 +57,13 @@ function App() {
       break;
   }
 
+  const handleBackIcon = () => {
+    setActiveStep(activeStep - 1)
+    if(activeStep == 1) {
+      setSelectedDate('')
+    }
+  }
+
 
   return (
     <div
@@ -64,6 +73,12 @@ function App() {
       <div
         style={{width: '100%', display: 'flex', flexDirection: 'column', height: '100%' }}
       >
+        {activeStep !== 0 && (
+          <ArrowBackIcon
+            onClick={handleBackIcon}
+            sx={{alignSelf: 'start', padding: '10px 20px', position: 'absolute', top:70}}
+          />
+        )}
         <Typography
           component="h1"
           id="modal-title"
@@ -73,22 +88,23 @@ function App() {
         >Eventos</Typography>
         <CalendarStepper activeStep={activeStep} />
         {view}
-        {selectedDate && activeStep !== 2 ? (
+        {selectedDate && activeStep == 0 ? (
           <Button
             sx={{
               width: 100,
               margin: "0 auto",
-              backgroundColor: activeStep == 0 ? "#ffddcf" : '#dfdfdf',
+              backgroundColor: "#ffddcf",
+              color: '#000',
               "&:hover": {
-                backgroundColor: activeStep == 0 ? "#ffddcf" : '#dfdfdf',
+                backgroundColor: "#ffddcf",
               },
               "&:focus": {
                 outline: "4px auto #fd6a30",
               },
             }}
-            onClick={() => activeStep == 0 ? handleStep(1) : handleStep(0)}
+            onClick={() => handleStep(1)}
             variant="soft"
-          >{activeStep == 0 ? 'Continue' : 'Atrás'}</Button>
+          >Continuar</Button>
         ) : ''}
       </div>
     </div>

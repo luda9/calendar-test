@@ -4,7 +4,7 @@ import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 
 import dayjs from 'dayjs';
 
-const EventsCalendar = ({handleDaySelection}) => {
+const EventsCalendar = ({handleDaySelection }) => {
 
   const disabledDates = [
     dayjs('2025-03-22'),
@@ -16,6 +16,19 @@ const EventsCalendar = ({handleDaySelection}) => {
   const disableSpecificDates = (date) => {
     return disabledDates.some((disabledDate) => disabledDate.isSame(date, 'day'));
   };
+
+  const handleOnChange = (date) => {
+    handleDaySelection(date.locale('es').format('dddd DD [de] MMMM [del] YYYY'))
+  }
+
+  // const handleDateClick = async () => {
+  //   const isDayAvaliable = await handleDaySelection()
+  //   if(!isDayAvaliable){
+  //     alert('no se puede')
+  //   }
+  // }
+
+
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -41,7 +54,8 @@ const EventsCalendar = ({handleDaySelection}) => {
             outline: '4px auto #fd6a30'
           },
         }}
-        onChange={(date) => handleDaySelection(date.locale('es').format('dddd DD [de] MMMM [del] YYYY'))}
+        // onClick={handleDateClick}
+        onChange={handleOnChange}
       />
     </LocalizationProvider>
   )
